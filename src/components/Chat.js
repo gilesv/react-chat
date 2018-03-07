@@ -25,14 +25,14 @@ export default class Chat extends React.Component {
                     date: new Date()
                 }
             ],
-            users: ['heymrjack', 'pewdiepie', 'mrtomato'],
+            users: ['heymrjack', 'pewdiepie', 'mrtomato']
         }
     }
     render() {
         return (
             <main className={styles["chat-container"]}>
                 <aside className={styles["chat__users"]}>
-                    <div className={[styles["chat__users__title"], styles["font14"]].join(' ')}>{"Users on-line (" + this.state.users.lenght + ")"})</div>
+                    <div className={[styles["chat__users__title"], styles["font14"]].join(' ')}>{"Users on-line (" + this.state.users.length + ")"}</div>
                     <div className={styles["user-label__container"]}>
                         {
                             this.state.users.map(
