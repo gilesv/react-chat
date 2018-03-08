@@ -10,8 +10,8 @@ export default class Message extends React.Component {
                     <div className={styles.message__text}>{this.props.message}</div>
                 </div>
                 <div className={styles.message__date}>
-                    <div>{this.props.date.toLocaleTimeString()}</div>
-                    <div>{this.props.date.toLocaleDateString()}</div>
+                    <div>{this.props.date[0]}</div>
+                    <div>{this.props.date[1]}</div>
                 </div>
             </div>
         );

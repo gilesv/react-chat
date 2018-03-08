@@ -65,6 +65,21 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+if (process.env.NODE_ENV === 'production') {
+  module.exports = __webpack_require__(16);
+} else {
+  module.exports = __webpack_require__(17);
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -254,22 +269,57 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
 
-if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(16);
-} else {
-  module.exports = __webpack_require__(17);
+var content = __webpack_require__(29);
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(31)(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {
+	module.hot.accept("!!../../node_modules/css-loader/index.js??ref--1-1!../../node_modules/postcss-loader/lib/index.js??ref--1-2!../../node_modules/sass-loader/lib/loader.js!./index.sass", function() {
+		var newContent = require("!!../../node_modules/css-loader/index.js??ref--1-1!../../node_modules/postcss-loader/lib/index.js??ref--1-2!../../node_modules/sass-loader/lib/loader.js!./index.sass");
+
+		if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+
+		var locals = (function(a, b) {
+			var key, idx = 0;
+
+			for(key in a) {
+				if(!b || a[key] !== b[key]) return false;
+				idx++;
+			}
+
+			for(key in b) idx--;
+
+			return idx === 0;
+		}(content.locals, newContent.locals));
+
+		if(!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
+
+		update(newContent);
+	});
+
+	module.hot.dispose(function() { update(); });
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -311,7 +361,7 @@ emptyFunction.thatReturnsArgument = function (arg) {
 module.exports = emptyFunction;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -408,7 +458,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -429,57 +479,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = emptyObject;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(29);
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(31)(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {
-	module.hot.accept("!!../../node_modules/css-loader/index.js??ref--1-1!../../node_modules/postcss-loader/lib/index.js??ref--1-2!../../node_modules/sass-loader/lib/loader.js!./index.sass", function() {
-		var newContent = require("!!../../node_modules/css-loader/index.js??ref--1-1!../../node_modules/postcss-loader/lib/index.js??ref--1-2!../../node_modules/sass-loader/lib/loader.js!./index.sass");
-
-		if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-
-		var locals = (function(a, b) {
-			var key, idx = 0;
-
-			for(key in a) {
-				if(!b || a[key] !== b[key]) return false;
-				idx++;
-			}
-
-			for(key in b) idx--;
-
-			return idx === 0;
-		}(content.locals, newContent.locals));
-
-		if(!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
-
-		update(newContent);
-	});
-
-	module.hot.dispose(function() { update(); });
-}
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 6 */
@@ -539,7 +539,7 @@ function invariant(condition, format, a, b, c, d, e, f) {
 }
 
 module.exports = invariant;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 7 */
@@ -556,7 +556,7 @@ module.exports = invariant;
 
 
 
-var emptyFunction = __webpack_require__(2);
+var emptyFunction = __webpack_require__(3);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -608,7 +608,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = warning;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 8 */
@@ -675,7 +675,7 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
 
 module.exports = checkPropTypes;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 9 */
@@ -732,7 +732,7 @@ module.exports = ExecutionEnvironment;
  * @typechecks
  */
 
-var emptyFunction = __webpack_require__(2);
+var emptyFunction = __webpack_require__(3);
 
 /**
  * Upstream version of event listener. Does not take into account specific
@@ -795,7 +795,7 @@ var EventListener = {
 };
 
 module.exports = EventListener;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 11 */
@@ -989,12 +989,12 @@ module.exports = focusNode;
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react_dom__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Chat_js__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__public_css_index_sass__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__public_css_index_sass__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__public_css_index_sass__);
 
 
@@ -1017,7 +1017,7 @@ __WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODU
  * LICENSE file in the root directory of this source tree.
  */
 
-var m=__webpack_require__(3),n=__webpack_require__(4),p=__webpack_require__(2),q="function"===typeof Symbol&&Symbol["for"],r=q?Symbol["for"]("react.element"):60103,t=q?Symbol["for"]("react.call"):60104,u=q?Symbol["for"]("react.return"):60105,v=q?Symbol["for"]("react.portal"):60106,w=q?Symbol["for"]("react.fragment"):60107,x="function"===typeof Symbol&&Symbol.iterator;
+var m=__webpack_require__(4),n=__webpack_require__(5),p=__webpack_require__(3),q="function"===typeof Symbol&&Symbol["for"],r=q?Symbol["for"]("react.element"):60103,t=q?Symbol["for"]("react.call"):60104,u=q?Symbol["for"]("react.return"):60105,v=q?Symbol["for"]("react.portal"):60106,w=q?Symbol["for"]("react.fragment"):60107,x="function"===typeof Symbol&&Symbol.iterator;
 function y(a){for(var b=arguments.length-1,e="Minified React error #"+a+"; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d"+a,c=0;c<b;c++)e+="\x26args[]\x3d"+encodeURIComponent(arguments[c+1]);b=Error(e+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name="Invariant Violation";b.framesToPop=1;throw b;}
 var z={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}};function A(a,b,e){this.props=a;this.context=b;this.refs=n;this.updater=e||z}A.prototype.isReactComponent={};A.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?y("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState")};A.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate")};
 function B(a,b,e){this.props=a;this.context=b;this.refs=n;this.updater=e||z}function C(){}C.prototype=A.prototype;var D=B.prototype=new C;D.constructor=B;m(D,A.prototype);D.isPureReactComponent=!0;function E(a,b,e){this.props=a;this.context=b;this.refs=n;this.updater=e||z}var F=E.prototype=new C;F.constructor=E;m(F,A.prototype);F.unstable_isAsyncReactComponent=!0;F.render=function(){return this.props.children};var G={current:null},H=Object.prototype.hasOwnProperty,I={key:!0,ref:!0,__self:!0,__source:!0};
@@ -1053,11 +1053,11 @@ if (process.env.NODE_ENV !== "production") {
   (function() {
 'use strict';
 
-var _assign = __webpack_require__(3);
-var emptyObject = __webpack_require__(4);
+var _assign = __webpack_require__(4);
+var emptyObject = __webpack_require__(5);
 var invariant = __webpack_require__(6);
 var warning = __webpack_require__(7);
-var emptyFunction = __webpack_require__(2);
+var emptyFunction = __webpack_require__(3);
 var checkPropTypes = __webpack_require__(8);
 
 // TODO: this is special because it gets imported during build.
@@ -2394,7 +2394,7 @@ module.exports = react;
   })();
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 18 */
@@ -2459,7 +2459,7 @@ if (process.env.NODE_ENV === 'production') {
   module.exports = __webpack_require__(23);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 20 */
@@ -2478,7 +2478,7 @@ if (process.env.NODE_ENV === 'production') {
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(1),l=__webpack_require__(9),B=__webpack_require__(3),C=__webpack_require__(2),ba=__webpack_require__(10),da=__webpack_require__(11),ea=__webpack_require__(12),fa=__webpack_require__(13),ia=__webpack_require__(14),D=__webpack_require__(4);
+var aa=__webpack_require__(0),l=__webpack_require__(9),B=__webpack_require__(4),C=__webpack_require__(3),ba=__webpack_require__(10),da=__webpack_require__(11),ea=__webpack_require__(12),fa=__webpack_require__(13),ia=__webpack_require__(14),D=__webpack_require__(5);
 function E(a){for(var b=arguments.length-1,c="Minified React error #"+a+"; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d"+a,d=0;d<b;d++)c+="\x26args[]\x3d"+encodeURIComponent(arguments[d+1]);b=Error(c+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name="Invariant Violation";b.framesToPop=1;throw b;}aa?void 0:E("227");
 var oa={children:!0,dangerouslySetInnerHTML:!0,defaultValue:!0,defaultChecked:!0,innerHTML:!0,suppressContentEditableWarning:!0,suppressHydrationWarning:!0,style:!0};function pa(a,b){return(a&b)===b}
 var ta={MUST_USE_PROPERTY:1,HAS_BOOLEAN_VALUE:4,HAS_NUMERIC_VALUE:8,HAS_POSITIVE_NUMERIC_VALUE:24,HAS_OVERLOADED_BOOLEAN_VALUE:32,HAS_STRING_BOOLEAN_VALUE:64,injectDOMPropertyConfig:function(a){var b=ta,c=a.Properties||{},d=a.DOMAttributeNamespaces||{},e=a.DOMAttributeNames||{};a=a.DOMMutationMethods||{};for(var f in c){ua.hasOwnProperty(f)?E("48",f):void 0;var g=f.toLowerCase(),h=c[f];g={attributeName:g,attributeNamespace:null,propertyName:f,mutationMethod:null,mustUseProperty:pa(h,b.MUST_USE_PROPERTY),
@@ -2775,18 +2775,18 @@ if (process.env.NODE_ENV !== "production") {
   (function() {
 'use strict';
 
-var React = __webpack_require__(1);
+var React = __webpack_require__(0);
 var invariant = __webpack_require__(6);
 var warning = __webpack_require__(7);
 var ExecutionEnvironment = __webpack_require__(9);
-var _assign = __webpack_require__(3);
-var emptyFunction = __webpack_require__(2);
+var _assign = __webpack_require__(4);
+var emptyFunction = __webpack_require__(3);
 var EventListener = __webpack_require__(10);
 var getActiveElement = __webpack_require__(11);
 var shallowEqual = __webpack_require__(12);
 var containsNode = __webpack_require__(13);
 var focusNode = __webpack_require__(14);
-var emptyObject = __webpack_require__(4);
+var emptyObject = __webpack_require__(5);
 var checkPropTypes = __webpack_require__(8);
 var hyphenateStyleName = __webpack_require__(24);
 var camelizeStyleName = __webpack_require__(26);
@@ -18153,7 +18153,7 @@ module.exports = reactDom;
   })();
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 24 */
@@ -18316,17 +18316,19 @@ module.exports = camelize;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Message_js__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__UserLabel_js__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__MessageArea_js__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__UserList_js__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__TypeArea_js__ = __webpack_require__(37);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 
 
 
@@ -18341,25 +18343,59 @@ var Chat = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
 
+        var d = new Date();
         _this.state = {
             currentUser: "HeyMrJack",
             messages: [{
                 user: 'heymrjack',
                 message: 'Hello world! First chat message',
-                date: new Date()
+                date: [d.toLocaleTimeString(), d.toLocaleDateString()]
             }, {
                 user: 'mrtomato',
                 message: 'cool chat by the way',
-                date: new Date()
+                date: [d.toLocaleTimeString(), d.toLocaleDateString()]
             }, {
                 user: 'pewdiepie',
                 message: 'BUT CAN U DO THISSSS',
-                date: new Date()
+                date: [d.toLocaleTimeString(), d.toLocaleDateString()]
             }],
-            users: ['heymrjack', 'pewdiepie', 'mrtomato']
-        };
+            users: ['HeyMrJack', 'pewdiepie', 'mrtomato']
+
+            /* Methods */
+        };_this.sendMessage = _this.sendMessage.bind(_this);
+        _this.receiveMessage = _this.receiveMessage.bind(_this);
+
+        /* Socket listeners */
+        _this.socket = io();
+        _this.socket.on('message', function (msg) {
+            console.log(msg);
+            _this.receiveMessage(msg);
+        });
+
         return _this;
     }
+
+    Chat.prototype.sendMessage = function sendMessage(newMessage) {
+        var now = new Date();
+
+        var newMsg = {
+            user: this.state.currentUser,
+            message: newMessage,
+            date: [now.toLocaleTimeString(), now.toLocaleDateString()]
+        };
+
+        this.setState({
+            messages: this.state.messages.concat([newMsg])
+        });
+
+        this.socket.emit('message', newMsg);
+    };
+
+    Chat.prototype.receiveMessage = function receiveMessage(msg) {
+        this.setState({
+            messages: this.state.messages.concat([msg])
+        });
+    };
 
     Chat.prototype.render = function render() {
         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -18368,35 +18404,13 @@ var Chat = function (_React$Component) {
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'aside',
                 { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["chat__users"] },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: [__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["chat__users__title"], __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["font14"]].join(' ') },
-                    "Users on-line (" + this.state.users.length + ")",
-                    ')'
-                ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["user-label__container"] },
-                    this.state.users.map(function (u, i) {
-                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__UserLabel_js__["a" /* default */], { username: u, key: u + "_" + i });
-                    })
-                )
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__UserList_js__["a" /* default */], { users: this.state.users })
             ),
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'section',
                 { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["chat__main"] },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["chat__messages"] },
-                    this.state.messages.map(function (m, i) {
-                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__Message_js__["a" /* default */], { user: m.user, date: m.date, message: m.message, key: m.user + "_" + i });
-                    })
-                ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["chat__textarea"] },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('textarea', null)
-                )
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__MessageArea_js__["a" /* default */], { messages: this.state.messages }),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__TypeArea_js__["a" /* default */], { sendMessage: this.sendMessage })
             )
         );
     };
@@ -18415,7 +18429,7 @@ exports = module.exports = __webpack_require__(30)(true);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700);", ""]);
 
 // module
-exports.push([module.i, "html,\nbody,\nul,\nol {\n  margin: 0;\n  padding: 0; }\n\n* {\n  font-family: Montserrat, sans-serif;\n  font-weight: 400; }\n\nhtml,\nbody {\n  height: 100%; }\n\nbody {\n  background-color: #273238;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-line-pack: center;\n      align-content: center;\n  color: #f2f2f2; }\n\n.font10 {\n  font-size: 10px;\n  font-weight: 300; }\n\n.font12 {\n  font-size: 12px;\n  font-weight: 300; }\n\n.font14 {\n  font-size: 14px;\n  font-weight: 600; }\n\n.font16 {\n  font-size: 16px;\n  font-weight: 600; }\n\n.font18 {\n  font-size: 18px;\n  font-weight: 700; }\n\n.chat-container {\n  background-color: #7b94a0;\n  padding: 25px;\n  width: 800px;\n  height: 400px;\n  border-radius: 5px;\n  font-size: 13px;\n  color: #f2f2f2;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: row nowrap;\n      flex-flow: row nowrap;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.chat__users {\n  -ms-flex: 0 0 25%;\n      flex: 0 0 25%;\n  height: 100%; }\n\n.chat__users__title {\n  margin-bottom: 15px; }\n\n.chat__main {\n  -ms-flex: 0 0 75%;\n      flex: 0 0 75%;\n  background-color: #273238;\n  height: 100%;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: column nowrap;\n      flex-flow: column nowrap; }\n\n.chat__messages {\n  -ms-flex: 1;\n      flex: 1;\n  background-color: #273238;\n  height: 100%;\n  overflow-y: auto; }\n\n.chat__textarea {\n  text-align: center; }\n\n.chat__textarea textarea {\n  resize: none;\n  width: calc(100% - 26px);\n  height: 40px;\n  padding: 10px;\n  border: 0;\n  border-top: 1px solid #38464e;\n  outline: none;\n  background-color: #d1d1d1; }\n\n.message {\n  padding: 20px;\n  width: calc(100% - 40px);\n  border-bottom: 1px solid #38464e;\n  font-size: 12px;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.message__left {\n  max-width: 95%; }\n\n.message__username {\n  font-weight: 600;\n  margin-right: 10px; }\n\n.message__text {\n  font-weight: 400;\n  max-width: 95%; }\n\n.message__date {\n  font-weight: 300;\n  color: #989898;\n  text-align: right; }\n\n.user-label__container {\n  width: calc(100% - 10px); }\n\n.user-label {\n  padding: 5px;\n  font-weight: 600;\n  transition: all .2s ease-in-out; }\n\n.user-label:hover {\n  background-color: #677c86; }\n\n.user-blob {\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n  background-color: #fff;\n  display: inline-block;\n  margin-right: 5px; }\n", "", {"version":3,"sources":["C:/Users/vgiles/Desktop/projetos/react-chat/public/css/index.sass"],"names":[],"mappings":"AACA;;;;EAIE,UAAU;EACV,WAAW,EAAE;;AAEf;EACE,oCAAoC;EACpC,iBAAiB,EAAE;;AAErB;;EAEE,aAAa,EAAE;;AAEjB;EACE,0BAA0B;EAC1B,qBAAqB;EACrB,cAAc;EACd,sBAAsB;MAClB,wBAAwB;EAC5B,uBAAuB;MACnB,oBAAoB;EACxB,2BAA2B;MACvB,sBAAsB;EAC1B,eAAe,EAAE;;AAEnB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,0BAA0B;EAC1B,cAAc;EACd,aAAa;EACb,cAAc;EACd,mBAAmB;EACnB,gBAAgB;EAChB,eAAe;EACf,qBAAqB;EACrB,cAAc;EACd,0BAA0B;MACtB,sBAAsB;EAC1B,uBAAuB;MACnB,+BAA+B,EAAE;;AAEvC;EACE,kBAAkB;MACd,cAAc;EAClB,aAAa,EAAE;;AAEjB;EACE,oBAAoB,EAAE;;AAExB;EACE,kBAAkB;MACd,cAAc;EAClB,0BAA0B;EAC1B,aAAa;EACb,qBAAqB;EACrB,cAAc;EACd,6BAA6B;MACzB,yBAAyB,EAAE;;AAEjC;EACE,YAAY;MACR,QAAQ;EACZ,0BAA0B;EAC1B,aAAa;EACb,iBAAiB,EAAE;;AAErB;EACE,mBAAmB,EAAE;;AAEvB;EACE,aAAa;EACb,yBAAyB;EACzB,aAAa;EACb,cAAc;EACd,UAAU;EACV,8BAA8B;EAC9B,cAAc;EACd,0BAA0B,EAAE;;AAE9B;EACE,cAAc;EACd,yBAAyB;EACzB,iCAAiC;EACjC,gBAAgB;EAChB,qBAAqB;EACrB,cAAc;EACd,uBAAuB;MACnB,oBAAoB;EACxB,uBAAuB;MACnB,+BAA+B,EAAE;;AAEvC;EACE,eAAe,EAAE;;AAEnB;EACE,iBAAiB;EACjB,mBAAmB,EAAE;;AAEvB;EACE,iBAAiB;EACjB,eAAe,EAAE;;AAEnB;EACE,iBAAiB;EACjB,eAAe;EACf,kBAAkB,EAAE;;AAEtB;EACE,yBAAyB,EAAE;;AAE7B;EACE,aAAa;EACb,iBAAiB;EACjB,gCAAgC,EAAE;;AAEpC;EACE,0BAA0B,EAAE;;AAE9B;EACE,YAAY;EACZ,aAAa;EACb,mBAAmB;EACnB,uBAAuB;EACvB,sBAAsB;EACtB,kBAAkB,EAAE","file":"index.sass","sourcesContent":["@import url(\"https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700\");\nhtml,\nbody,\nul,\nol {\n  margin: 0;\n  padding: 0; }\n\n* {\n  font-family: Montserrat, sans-serif;\n  font-weight: 400; }\n\nhtml,\nbody {\n  height: 100%; }\n\nbody {\n  background-color: #273238;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-line-pack: center;\n      align-content: center;\n  color: #f2f2f2; }\n\n.font10 {\n  font-size: 10px;\n  font-weight: 300; }\n\n.font12 {\n  font-size: 12px;\n  font-weight: 300; }\n\n.font14 {\n  font-size: 14px;\n  font-weight: 600; }\n\n.font16 {\n  font-size: 16px;\n  font-weight: 600; }\n\n.font18 {\n  font-size: 18px;\n  font-weight: 700; }\n\n.chat-container {\n  background-color: #7b94a0;\n  padding: 25px;\n  width: 800px;\n  height: 400px;\n  border-radius: 5px;\n  font-size: 13px;\n  color: #f2f2f2;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: row nowrap;\n      flex-flow: row nowrap;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.chat__users {\n  -ms-flex: 0 0 25%;\n      flex: 0 0 25%;\n  height: 100%; }\n\n.chat__users__title {\n  margin-bottom: 15px; }\n\n.chat__main {\n  -ms-flex: 0 0 75%;\n      flex: 0 0 75%;\n  background-color: #273238;\n  height: 100%;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: column nowrap;\n      flex-flow: column nowrap; }\n\n.chat__messages {\n  -ms-flex: 1;\n      flex: 1;\n  background-color: #273238;\n  height: 100%;\n  overflow-y: auto; }\n\n.chat__textarea {\n  text-align: center; }\n\n.chat__textarea textarea {\n  resize: none;\n  width: calc(100% - 26px);\n  height: 40px;\n  padding: 10px;\n  border: 0;\n  border-top: 1px solid #38464e;\n  outline: none;\n  background-color: #d1d1d1; }\n\n.message {\n  padding: 20px;\n  width: calc(100% - 40px);\n  border-bottom: 1px solid #38464e;\n  font-size: 12px;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.message__left {\n  max-width: 95%; }\n\n.message__username {\n  font-weight: 600;\n  margin-right: 10px; }\n\n.message__text {\n  font-weight: 400;\n  max-width: 95%; }\n\n.message__date {\n  font-weight: 300;\n  color: #989898;\n  text-align: right; }\n\n.user-label__container {\n  width: calc(100% - 10px); }\n\n.user-label {\n  padding: 5px;\n  font-weight: 600;\n  transition: all .2s ease-in-out; }\n\n.user-label:hover {\n  background-color: #677c86; }\n\n.user-blob {\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n  background-color: #fff;\n  display: inline-block;\n  margin-right: 5px; }\n"],"sourceRoot":""}]);
+exports.push([module.i, "html,\nbody,\nul,\nol {\n  margin: 0;\n  padding: 0; }\n\n* {\n  font-family: Montserrat, sans-serif;\n  font-weight: 400; }\n\nhtml,\nbody {\n  height: 100%; }\n\nbody {\n  background-color: #273238;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-line-pack: center;\n      align-content: center;\n  color: #f2f2f2; }\n\n.font10 {\n  font-size: 10px;\n  font-weight: 300; }\n\n.font12 {\n  font-size: 12px;\n  font-weight: 300; }\n\n.font14 {\n  font-size: 14px;\n  font-weight: 600; }\n\n.font16 {\n  font-size: 16px;\n  font-weight: 600; }\n\n.font18 {\n  font-size: 18px;\n  font-weight: 700; }\n\n.chat-container {\n  background-color: #7b94a0;\n  padding: 25px;\n  width: 800px;\n  height: 400px;\n  border-radius: 5px;\n  font-size: 13px;\n  color: #f2f2f2;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: row nowrap;\n      flex-flow: row nowrap;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.chat__users {\n  -ms-flex: 0 0 25%;\n      flex: 0 0 25%;\n  height: 100%; }\n\n.chat__users__title {\n  margin-bottom: 15px; }\n\n.chat__main {\n  -ms-flex: 0 0 75%;\n      flex: 0 0 75%;\n  background-color: #273238;\n  height: 100%;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: column nowrap;\n      flex-flow: column nowrap; }\n\n.chat__messages {\n  -ms-flex: 1;\n      flex: 1;\n  background-color: #273238;\n  height: 100%;\n  overflow-y: auto; }\n\n.chat__textarea {\n  text-align: center; }\n\n.chat__textarea textarea {\n  resize: none;\n  width: calc(100% - 26px);\n  height: 40px;\n  padding: 10px;\n  border: 0;\n  border-top: 1px solid #38464e;\n  outline: none;\n  background-color: #d1d1d1; }\n\n.message {\n  padding: 20px;\n  width: calc(100% - 40px);\n  border-bottom: 1px solid #38464e;\n  font-size: 12px;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.message__left {\n  -ms-flex: 1;\n      flex: 1;\n  word-break: break-all; }\n\n.message__username {\n  font-weight: 600;\n  margin-right: 10px; }\n\n.message__text {\n  font-weight: 400;\n  max-width: 95%; }\n\n.message__date {\n  font-weight: 300;\n  color: #989898;\n  text-align: right; }\n\n.user-label__container {\n  width: calc(100% - 10px); }\n\n.user-label {\n  padding: 5px;\n  font-weight: 600;\n  transition: all .2s ease-in-out; }\n\n.user-label:hover {\n  background-color: #677c86; }\n\n.user-blob {\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n  background-color: #fff;\n  display: inline-block;\n  margin-right: 5px; }\n", "", {"version":3,"sources":["C:/Users/vgiles/Desktop/projetos/react-chat/public/css/index.sass"],"names":[],"mappings":"AACA;;;;EAIE,UAAU;EACV,WAAW,EAAE;;AAEf;EACE,oCAAoC;EACpC,iBAAiB,EAAE;;AAErB;;EAEE,aAAa,EAAE;;AAEjB;EACE,0BAA0B;EAC1B,qBAAqB;EACrB,cAAc;EACd,sBAAsB;MAClB,wBAAwB;EAC5B,uBAAuB;MACnB,oBAAoB;EACxB,2BAA2B;MACvB,sBAAsB;EAC1B,eAAe,EAAE;;AAEnB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,0BAA0B;EAC1B,cAAc;EACd,aAAa;EACb,cAAc;EACd,mBAAmB;EACnB,gBAAgB;EAChB,eAAe;EACf,qBAAqB;EACrB,cAAc;EACd,0BAA0B;MACtB,sBAAsB;EAC1B,uBAAuB;MACnB,+BAA+B,EAAE;;AAEvC;EACE,kBAAkB;MACd,cAAc;EAClB,aAAa,EAAE;;AAEjB;EACE,oBAAoB,EAAE;;AAExB;EACE,kBAAkB;MACd,cAAc;EAClB,0BAA0B;EAC1B,aAAa;EACb,qBAAqB;EACrB,cAAc;EACd,6BAA6B;MACzB,yBAAyB,EAAE;;AAEjC;EACE,YAAY;MACR,QAAQ;EACZ,0BAA0B;EAC1B,aAAa;EACb,iBAAiB,EAAE;;AAErB;EACE,mBAAmB,EAAE;;AAEvB;EACE,aAAa;EACb,yBAAyB;EACzB,aAAa;EACb,cAAc;EACd,UAAU;EACV,8BAA8B;EAC9B,cAAc;EACd,0BAA0B,EAAE;;AAE9B;EACE,cAAc;EACd,yBAAyB;EACzB,iCAAiC;EACjC,gBAAgB;EAChB,qBAAqB;EACrB,cAAc;EACd,uBAAuB;MACnB,oBAAoB;EACxB,uBAAuB;MACnB,+BAA+B,EAAE;;AAEvC;EACE,YAAY;MACR,QAAQ;EACZ,sBAAsB,EAAE;;AAE1B;EACE,iBAAiB;EACjB,mBAAmB,EAAE;;AAEvB;EACE,iBAAiB;EACjB,eAAe,EAAE;;AAEnB;EACE,iBAAiB;EACjB,eAAe;EACf,kBAAkB,EAAE;;AAEtB;EACE,yBAAyB,EAAE;;AAE7B;EACE,aAAa;EACb,iBAAiB;EACjB,gCAAgC,EAAE;;AAEpC;EACE,0BAA0B,EAAE;;AAE9B;EACE,YAAY;EACZ,aAAa;EACb,mBAAmB;EACnB,uBAAuB;EACvB,sBAAsB;EACtB,kBAAkB,EAAE","file":"index.sass","sourcesContent":["@import url(\"https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700\");\nhtml,\nbody,\nul,\nol {\n  margin: 0;\n  padding: 0; }\n\n* {\n  font-family: Montserrat, sans-serif;\n  font-weight: 400; }\n\nhtml,\nbody {\n  height: 100%; }\n\nbody {\n  background-color: #273238;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-line-pack: center;\n      align-content: center;\n  color: #f2f2f2; }\n\n.font10 {\n  font-size: 10px;\n  font-weight: 300; }\n\n.font12 {\n  font-size: 12px;\n  font-weight: 300; }\n\n.font14 {\n  font-size: 14px;\n  font-weight: 600; }\n\n.font16 {\n  font-size: 16px;\n  font-weight: 600; }\n\n.font18 {\n  font-size: 18px;\n  font-weight: 700; }\n\n.chat-container {\n  background-color: #7b94a0;\n  padding: 25px;\n  width: 800px;\n  height: 400px;\n  border-radius: 5px;\n  font-size: 13px;\n  color: #f2f2f2;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: row nowrap;\n      flex-flow: row nowrap;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.chat__users {\n  -ms-flex: 0 0 25%;\n      flex: 0 0 25%;\n  height: 100%; }\n\n.chat__users__title {\n  margin-bottom: 15px; }\n\n.chat__main {\n  -ms-flex: 0 0 75%;\n      flex: 0 0 75%;\n  background-color: #273238;\n  height: 100%;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: column nowrap;\n      flex-flow: column nowrap; }\n\n.chat__messages {\n  -ms-flex: 1;\n      flex: 1;\n  background-color: #273238;\n  height: 100%;\n  overflow-y: auto; }\n\n.chat__textarea {\n  text-align: center; }\n\n.chat__textarea textarea {\n  resize: none;\n  width: calc(100% - 26px);\n  height: 40px;\n  padding: 10px;\n  border: 0;\n  border-top: 1px solid #38464e;\n  outline: none;\n  background-color: #d1d1d1; }\n\n.message {\n  padding: 20px;\n  width: calc(100% - 40px);\n  border-bottom: 1px solid #38464e;\n  font-size: 12px;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.message__left {\n  -ms-flex: 1;\n      flex: 1;\n  word-break: break-all; }\n\n.message__username {\n  font-weight: 600;\n  margin-right: 10px; }\n\n.message__text {\n  font-weight: 400;\n  max-width: 95%; }\n\n.message__date {\n  font-weight: 300;\n  color: #989898;\n  text-align: right; }\n\n.user-label__container {\n  width: calc(100% - 10px); }\n\n.user-label {\n  padding: 5px;\n  font-weight: 600;\n  transition: all .2s ease-in-out; }\n\n.user-label:hover {\n  background-color: #677c86; }\n\n.user-blob {\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n  background-color: #fff;\n  display: inline-block;\n  margin-right: 5px; }\n"],"sourceRoot":""}]);
 
 // exports
 exports.locals = {
@@ -19004,9 +19018,65 @@ module.exports = function (css) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Message_js__ = __webpack_require__(34);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+
+var MessageArea = function (_React$Component) {
+    _inherits(MessageArea, _React$Component);
+
+    function MessageArea() {
+        _classCallCheck(this, MessageArea);
+
+        return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
+    }
+
+    MessageArea.prototype.componentDidUpdate = function componentDidUpdate() {
+        this.messageList.scrollTop = this.messageList.scrollHeight;
+    };
+
+    MessageArea.prototype.componentDidMount = function componentDidMount() {
+        this.messageList.scrollTop = this.messageList.scrollHeight;
+    };
+
+    MessageArea.prototype.render = function render() {
+        var _this2 = this;
+
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["chat__messages"], ref: function ref(el) {
+                    return _this2.messageList = el;
+                } },
+            this.props.messages.map(function (m, i) {
+                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__Message_js__["a" /* default */], { user: m.user, date: m.date, message: m.message, key: m.user + "_" + i });
+            })
+        );
+    };
+
+    return MessageArea;
+}(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["a"] = (MessageArea);
+
+/***/ }),
+/* 34 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -19050,12 +19120,12 @@ var Message = function (_React$Component) {
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     null,
-                    this.props.date.toLocaleTimeString()
+                    this.props.date[0]
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     null,
-                    this.props.date.toLocaleDateString()
+                    this.props.date[1]
                 )
             )
         );
@@ -19067,14 +19137,67 @@ var Message = function (_React$Component) {
 /* harmony default export */ __webpack_exports__["a"] = (Message);
 
 /***/ }),
-/* 34 */
+/* 35 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserLabel_js__ = __webpack_require__(36);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+
+var UserList = function (_React$Component) {
+    _inherits(UserList, _React$Component);
+
+    function UserList() {
+        _classCallCheck(this, UserList);
+
+        return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
+    }
+
+    UserList.prototype.render = function render() {
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            null,
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: [__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["chat__users__title"], __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["font14"]].join(' ') },
+                "Online users (" + this.props.users.length + ")"
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["user-label__container"] },
+                this.props.users.map(function (u, i) {
+                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UserLabel_js__["a" /* default */], { username: u, key: u + "_" + i });
+                })
+            )
+        );
+    };
+
+    return UserList;
+}(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["a"] = (UserList);
+
+/***/ }),
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export UserBlob */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -19124,6 +19247,72 @@ var UserBlob = function (_React$Component2) {
 
     return UserBlob;
 }(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
+
+/***/ }),
+/* 37 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var TypeArea = function (_React$Component) {
+    _inherits(TypeArea, _React$Component);
+
+    function TypeArea(props) {
+        _classCallCheck(this, TypeArea);
+
+        var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
+
+        _this.state = {
+            value: ""
+        };
+        _this.handleInput = _this.handleInput.bind(_this);
+        return _this;
+    }
+
+    TypeArea.prototype.handleInput = function handleInput(e) {
+        var event = e.nativeEvent;
+        if (event.inputType !== undefined) {
+            if (event.inputType == "insertLineBreak") {
+                this.sendMessage();
+            } else {
+                this.setState({
+                    value: event.target.value
+                });
+            }
+        } else {
+            console.log(event);
+        }
+    };
+
+    TypeArea.prototype.sendMessage = function sendMessage() {
+        this.props.sendMessage(this.state.value);
+        this.setState({ value: "" });
+    };
+
+    TypeArea.prototype.render = function render() {
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["chat__textarea"] },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('textarea', { value: this.state.value, onInput: this.handleInput })
+        );
+    };
+
+    return TypeArea;
+}(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["a"] = (TypeArea);
 
 /***/ })
 /******/ ]);
