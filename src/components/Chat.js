@@ -3,45 +3,61 @@ import styles from '../../public/css/index.sass';
 import MessageArea from './MessageArea.js';
 import UserList from './UserList.js';
 import TypeArea from './TypeArea.js';
+import RegisterPopup from './RegisterPopup.js';
 
 export default class Chat extends React.Component {
     constructor(props) {
         super(props);
-        let d = new Date();
+
         this.state = {
-            currentUser: "HeyMrJack",
-            messages: [
-                {
-                    user: 'heymrjack',
-                    message: 'Hello world! First chat message',
-                    date: [d.toLocaleTimeString(), d.toLocaleDateString()]
-                },
-                {
-                    user: 'mrtomato',
-                    message: 'cool chat by the way',
-                    date: [d.toLocaleTimeString(), d.toLocaleDateString()]
-                },
-                {
-                    user: 'pewdiepie',
-                    message: 'BUT CAN U DO THISSSS',
-                    date: [d.toLocaleTimeString(), d.toLocaleDateString()]
-                }
-            ],
-            users: ['HeyMrJack', 'pewdiepie', 'mrtomato']
+            currentUser: "",
+            messages: [],
+            users: []
         }
 
         /* Methods */
+        this.configSocket = this.configSocket.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
+        this.notify = this.notify.bind(this);
+        this.userRegistered = this.userRegistered.bind(this);
+        this.userDisconnected = this.userDisconnected.bind(this);
+        this.registerUser = this.registerUser.bind(this);
 
         /* Socket listeners */
-        this.socket = io();
-        this.socket.on('message', (msg) => {
-            console.log(msg);
-            this.receiveMessage(msg);
+        this.socket = this.configSocket();
+
+    }
+
+    configSocket() {
+        let socket = io();
+    
+        socket.on('userConnected', (id) => {
+            console.log('User #' + id + ' is online');
         });
 
-        
+        socket.on('userRegistered', (username) => {
+            this.userRegistered(username);
+            this.notify('~ '+ username + ' is online. ~');
+        });
+
+        socket.on('userDisconnected', (username) => {
+            this.userDisconnected(username);
+            this.notify('~ '+ username + ' went offline. ~');
+        });
+
+        socket.on('newMessage', (message) => {
+            this.receiveMessage(message);
+        })
+
+        return socket;
+    }
+
+    registerUser(username) {
+        this.setState({
+            currentUser: username
+        });
+        this.socket.emit('userRegistered', username);
     }
 
     sendMessage(newMessage) {
@@ -50,19 +66,53 @@ export default class Chat extends React.Component {
         let newMsg = {
             user: this.state.currentUser,
             message: newMessage,
-            date: [now.toLocaleTimeString(), now.toLocaleDateString()]
-        }
-        
+            date: [now.toLocaleTimeString(), now.toLocaleDateString()],
+            type: 'message'
+        };
+
+        this.socket.emit('newMessage', newMsg);
+
         this.setState({
             messages: this.state.messages.concat([newMsg])
         });
         
-        this.socket.emit('message', newMsg);
     }
 
     receiveMessage(msg) {
         this.setState({
             messages: this.state.messages.concat([msg])
+        });
+    }
+
+    userRegistered(username) {
+        let _users = this.state.users;
+        _users.push(username);
+        this.setState({
+            users: _users
+        });
+    }
+
+    userDisconnected(username) {
+        let _users = this.state.users;
+        if(_users.indexOf(username) >= 0) {
+            _users.splice(_users.indexOf(username),1);
+            console.log(_users);
+            this.setState({
+                users: _users
+            });
+        } else {
+            console.log('nope');
+        }
+        
+    }
+
+    notify(message) {
+        let notif = {
+            type: 'notification',
+            message: message
+        };
+        this.setState({
+            messages: this.state.messages.concat([notif])
         });
     }
 
@@ -76,6 +126,7 @@ export default class Chat extends React.Component {
                     <MessageArea messages={this.state.messages} />
                     <TypeArea sendMessage={this.sendMessage}/>
                 </section>
+                <RegisterPopup register={this.registerUser} />
             </main>
         )
     }

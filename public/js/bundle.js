@@ -18321,13 +18321,15 @@ module.exports = camelize;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__MessageArea_js__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__UserList_js__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__TypeArea_js__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__UserList_js__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__TypeArea_js__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__RegisterPopup_js__ = __webpack_require__(39);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 
 
 
@@ -18343,37 +18345,51 @@ var Chat = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
 
-        var d = new Date();
         _this.state = {
-            currentUser: "HeyMrJack",
-            messages: [{
-                user: 'heymrjack',
-                message: 'Hello world! First chat message',
-                date: [d.toLocaleTimeString(), d.toLocaleDateString()]
-            }, {
-                user: 'mrtomato',
-                message: 'cool chat by the way',
-                date: [d.toLocaleTimeString(), d.toLocaleDateString()]
-            }, {
-                user: 'pewdiepie',
-                message: 'BUT CAN U DO THISSSS',
-                date: [d.toLocaleTimeString(), d.toLocaleDateString()]
-            }],
-            users: ['HeyMrJack', 'pewdiepie', 'mrtomato']
+            currentUser: "",
+            messages: [],
+            users: []
 
             /* Methods */
-        };_this.sendMessage = _this.sendMessage.bind(_this);
+        };_this.configSocket = _this.configSocket.bind(_this);
+        _this.sendMessage = _this.sendMessage.bind(_this);
         _this.receiveMessage = _this.receiveMessage.bind(_this);
+        _this.notify = _this.notify.bind(_this);
+        _this.userRegistered = _this.userRegistered.bind(_this);
+        _this.userDisconnected = _this.userDisconnected.bind(_this);
+        _this.registerUser = _this.registerUser.bind(_this);
 
         /* Socket listeners */
-        _this.socket = io();
-        _this.socket.on('message', function (msg) {
-            console.log(msg);
-            _this.receiveMessage(msg);
-        });
+        _this.socket = _this.configSocket();
 
         return _this;
     }
+
+    Chat.prototype.configSocket = function configSocket() {
+        var _this2 = this;
+
+        var socket = io();
+
+        socket.on('userConnected', function (id) {
+            console.log('User #' + id + ' is online');
+        });
+
+        socket.on('userRegistered', function (username) {
+            _this2.userRegistered(username);
+            _this2.notify('~ ' + username + ' is online. ~');
+        });
+
+        socket.on('userDisconnected', function (username) {
+            _this2.userDisconnected(username);
+            _this2.notify('~ ' + username + ' went offline. ~');
+        });
+
+        socket.on('newMessage', function (message) {
+            _this2.receiveMessage(message);
+        });
+
+        return socket;
+    };
 
     Chat.prototype.sendMessage = function sendMessage(newMessage) {
         var now = new Date();
@@ -18381,20 +18397,59 @@ var Chat = function (_React$Component) {
         var newMsg = {
             user: this.state.currentUser,
             message: newMessage,
-            date: [now.toLocaleTimeString(), now.toLocaleDateString()]
+            date: [now.toLocaleTimeString(), now.toLocaleDateString()],
+            type: 'message'
         };
+
+        this.socket.emit('newMessage', newMsg);
 
         this.setState({
             messages: this.state.messages.concat([newMsg])
         });
-
-        this.socket.emit('message', newMsg);
     };
 
     Chat.prototype.receiveMessage = function receiveMessage(msg) {
         this.setState({
             messages: this.state.messages.concat([msg])
         });
+    };
+
+    Chat.prototype.notify = function notify(message) {
+        var notif = {
+            type: 'notification',
+            message: message
+        };
+        this.setState({
+            messages: this.state.messages.concat([notif])
+        });
+    };
+
+    Chat.prototype.userRegistered = function userRegistered(username) {
+        var _users = this.state.users;
+        _users.push(username);
+        this.setState({
+            users: _users
+        });
+    };
+
+    Chat.prototype.userDisconnected = function userDisconnected(username) {
+        var _users = this.state.users;
+        if (_users.indexOf(username) >= 0) {
+            _users.splice(_users.indexOf(username), 1);
+            console.log(_users);
+            this.setState({
+                users: _users
+            });
+        } else {
+            console.log('nope');
+        }
+    };
+
+    Chat.prototype.registerUser = function registerUser(username) {
+        this.setState({
+            currentUser: username
+        });
+        this.socket.emit('userRegistered', username);
     };
 
     Chat.prototype.render = function render() {
@@ -18411,7 +18466,8 @@ var Chat = function (_React$Component) {
                 { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["chat__main"] },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__MessageArea_js__["a" /* default */], { messages: this.state.messages }),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__TypeArea_js__["a" /* default */], { sendMessage: this.sendMessage })
-            )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__RegisterPopup_js__["a" /* default */], { register: this.registerUser })
         );
     };
 
@@ -18429,10 +18485,11 @@ exports = module.exports = __webpack_require__(30)(true);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700);", ""]);
 
 // module
-exports.push([module.i, "html,\nbody,\nul,\nol {\n  margin: 0;\n  padding: 0; }\n\n* {\n  font-family: Montserrat, sans-serif;\n  font-weight: 400; }\n\nhtml,\nbody {\n  height: 100%; }\n\nbody {\n  background-color: #273238;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-line-pack: center;\n      align-content: center;\n  color: #f2f2f2; }\n\n.font10 {\n  font-size: 10px;\n  font-weight: 300; }\n\n.font12 {\n  font-size: 12px;\n  font-weight: 300; }\n\n.font14 {\n  font-size: 14px;\n  font-weight: 600; }\n\n.font16 {\n  font-size: 16px;\n  font-weight: 600; }\n\n.font18 {\n  font-size: 18px;\n  font-weight: 700; }\n\n.chat-container {\n  background-color: #7b94a0;\n  padding: 25px;\n  width: 800px;\n  height: 400px;\n  border-radius: 5px;\n  font-size: 13px;\n  color: #f2f2f2;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: row nowrap;\n      flex-flow: row nowrap;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.chat__users {\n  -ms-flex: 0 0 25%;\n      flex: 0 0 25%;\n  height: 100%; }\n\n.chat__users__title {\n  margin-bottom: 15px; }\n\n.chat__main {\n  -ms-flex: 0 0 75%;\n      flex: 0 0 75%;\n  background-color: #273238;\n  height: 100%;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: column nowrap;\n      flex-flow: column nowrap; }\n\n.chat__messages {\n  -ms-flex: 1;\n      flex: 1;\n  background-color: #273238;\n  height: 100%;\n  overflow-y: auto; }\n\n.chat__textarea {\n  text-align: center; }\n\n.chat__textarea textarea {\n  resize: none;\n  width: calc(100% - 26px);\n  height: 40px;\n  padding: 10px;\n  border: 0;\n  border-top: 1px solid #38464e;\n  outline: none;\n  background-color: #d1d1d1; }\n\n.message {\n  padding: 20px;\n  width: calc(100% - 40px);\n  border-bottom: 1px solid #38464e;\n  font-size: 12px;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.message__left {\n  -ms-flex: 1;\n      flex: 1;\n  word-break: break-all; }\n\n.message__username {\n  font-weight: 600;\n  margin-right: 10px; }\n\n.message__text {\n  font-weight: 400;\n  max-width: 95%; }\n\n.message__date {\n  font-weight: 300;\n  color: #989898;\n  text-align: right; }\n\n.user-label__container {\n  width: calc(100% - 10px); }\n\n.user-label {\n  padding: 5px;\n  font-weight: 600;\n  transition: all .2s ease-in-out; }\n\n.user-label:hover {\n  background-color: #677c86; }\n\n.user-blob {\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n  background-color: #fff;\n  display: inline-block;\n  margin-right: 5px; }\n", "", {"version":3,"sources":["C:/Users/vgiles/Desktop/projetos/react-chat/public/css/index.sass"],"names":[],"mappings":"AACA;;;;EAIE,UAAU;EACV,WAAW,EAAE;;AAEf;EACE,oCAAoC;EACpC,iBAAiB,EAAE;;AAErB;;EAEE,aAAa,EAAE;;AAEjB;EACE,0BAA0B;EAC1B,qBAAqB;EACrB,cAAc;EACd,sBAAsB;MAClB,wBAAwB;EAC5B,uBAAuB;MACnB,oBAAoB;EACxB,2BAA2B;MACvB,sBAAsB;EAC1B,eAAe,EAAE;;AAEnB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,0BAA0B;EAC1B,cAAc;EACd,aAAa;EACb,cAAc;EACd,mBAAmB;EACnB,gBAAgB;EAChB,eAAe;EACf,qBAAqB;EACrB,cAAc;EACd,0BAA0B;MACtB,sBAAsB;EAC1B,uBAAuB;MACnB,+BAA+B,EAAE;;AAEvC;EACE,kBAAkB;MACd,cAAc;EAClB,aAAa,EAAE;;AAEjB;EACE,oBAAoB,EAAE;;AAExB;EACE,kBAAkB;MACd,cAAc;EAClB,0BAA0B;EAC1B,aAAa;EACb,qBAAqB;EACrB,cAAc;EACd,6BAA6B;MACzB,yBAAyB,EAAE;;AAEjC;EACE,YAAY;MACR,QAAQ;EACZ,0BAA0B;EAC1B,aAAa;EACb,iBAAiB,EAAE;;AAErB;EACE,mBAAmB,EAAE;;AAEvB;EACE,aAAa;EACb,yBAAyB;EACzB,aAAa;EACb,cAAc;EACd,UAAU;EACV,8BAA8B;EAC9B,cAAc;EACd,0BAA0B,EAAE;;AAE9B;EACE,cAAc;EACd,yBAAyB;EACzB,iCAAiC;EACjC,gBAAgB;EAChB,qBAAqB;EACrB,cAAc;EACd,uBAAuB;MACnB,oBAAoB;EACxB,uBAAuB;MACnB,+BAA+B,EAAE;;AAEvC;EACE,YAAY;MACR,QAAQ;EACZ,sBAAsB,EAAE;;AAE1B;EACE,iBAAiB;EACjB,mBAAmB,EAAE;;AAEvB;EACE,iBAAiB;EACjB,eAAe,EAAE;;AAEnB;EACE,iBAAiB;EACjB,eAAe;EACf,kBAAkB,EAAE;;AAEtB;EACE,yBAAyB,EAAE;;AAE7B;EACE,aAAa;EACb,iBAAiB;EACjB,gCAAgC,EAAE;;AAEpC;EACE,0BAA0B,EAAE;;AAE9B;EACE,YAAY;EACZ,aAAa;EACb,mBAAmB;EACnB,uBAAuB;EACvB,sBAAsB;EACtB,kBAAkB,EAAE","file":"index.sass","sourcesContent":["@import url(\"https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700\");\nhtml,\nbody,\nul,\nol {\n  margin: 0;\n  padding: 0; }\n\n* {\n  font-family: Montserrat, sans-serif;\n  font-weight: 400; }\n\nhtml,\nbody {\n  height: 100%; }\n\nbody {\n  background-color: #273238;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-line-pack: center;\n      align-content: center;\n  color: #f2f2f2; }\n\n.font10 {\n  font-size: 10px;\n  font-weight: 300; }\n\n.font12 {\n  font-size: 12px;\n  font-weight: 300; }\n\n.font14 {\n  font-size: 14px;\n  font-weight: 600; }\n\n.font16 {\n  font-size: 16px;\n  font-weight: 600; }\n\n.font18 {\n  font-size: 18px;\n  font-weight: 700; }\n\n.chat-container {\n  background-color: #7b94a0;\n  padding: 25px;\n  width: 800px;\n  height: 400px;\n  border-radius: 5px;\n  font-size: 13px;\n  color: #f2f2f2;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: row nowrap;\n      flex-flow: row nowrap;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.chat__users {\n  -ms-flex: 0 0 25%;\n      flex: 0 0 25%;\n  height: 100%; }\n\n.chat__users__title {\n  margin-bottom: 15px; }\n\n.chat__main {\n  -ms-flex: 0 0 75%;\n      flex: 0 0 75%;\n  background-color: #273238;\n  height: 100%;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: column nowrap;\n      flex-flow: column nowrap; }\n\n.chat__messages {\n  -ms-flex: 1;\n      flex: 1;\n  background-color: #273238;\n  height: 100%;\n  overflow-y: auto; }\n\n.chat__textarea {\n  text-align: center; }\n\n.chat__textarea textarea {\n  resize: none;\n  width: calc(100% - 26px);\n  height: 40px;\n  padding: 10px;\n  border: 0;\n  border-top: 1px solid #38464e;\n  outline: none;\n  background-color: #d1d1d1; }\n\n.message {\n  padding: 20px;\n  width: calc(100% - 40px);\n  border-bottom: 1px solid #38464e;\n  font-size: 12px;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.message__left {\n  -ms-flex: 1;\n      flex: 1;\n  word-break: break-all; }\n\n.message__username {\n  font-weight: 600;\n  margin-right: 10px; }\n\n.message__text {\n  font-weight: 400;\n  max-width: 95%; }\n\n.message__date {\n  font-weight: 300;\n  color: #989898;\n  text-align: right; }\n\n.user-label__container {\n  width: calc(100% - 10px); }\n\n.user-label {\n  padding: 5px;\n  font-weight: 600;\n  transition: all .2s ease-in-out; }\n\n.user-label:hover {\n  background-color: #677c86; }\n\n.user-blob {\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n  background-color: #fff;\n  display: inline-block;\n  margin-right: 5px; }\n"],"sourceRoot":""}]);
+exports.push([module.i, "html,\nbody,\nul,\nol {\n  margin: 0;\n  padding: 0; }\n\n* {\n  font-family: Montserrat, sans-serif;\n  font-weight: 400; }\n\nhtml,\nbody {\n  height: 100%; }\n\nbody {\n  background-color: #273238;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-line-pack: center;\n      align-content: center;\n  color: #f2f2f2; }\n\ndiv#root {\n  width: 100%;\n  height: 100%; }\n\n.font10 {\n  font-size: 10px;\n  font-weight: 300; }\n\n.font12 {\n  font-size: 12px;\n  font-weight: 300; }\n\n.font14 {\n  font-size: 14px;\n  font-weight: 600; }\n\n.font16 {\n  font-size: 16px;\n  font-weight: 600; }\n\n.font18 {\n  font-size: 18px;\n  font-weight: 700; }\n\n.chat-container {\n  background-color: #7b94a0;\n  width: 100%;\n  height: 100%;\n  font-size: 13px;\n  color: #f2f2f2;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: row nowrap;\n      flex-flow: row nowrap;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.chat__users {\n  -ms-flex: 1;\n      flex: 1;\n  margin: 20px; }\n\n.chat__users__title {\n  margin-bottom: 15px; }\n\n.chat__main {\n  -ms-flex: 0 0 75%;\n      flex: 0 0 75%;\n  background-color: #273238;\n  height: 100%;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: column nowrap;\n      flex-flow: column nowrap; }\n\n.chat__messages {\n  -ms-flex: 1;\n      flex: 1;\n  background-color: #273238;\n  height: 100%;\n  overflow-y: auto; }\n\n.chat__textarea {\n  text-align: center; }\n\n.chat__textarea textarea {\n  resize: none;\n  width: calc(100% - 26px);\n  height: 40px;\n  padding: 10px;\n  border: 0;\n  border-top: 1px solid #38464e;\n  outline: none;\n  background-color: #d1d1d1; }\n\n.message {\n  padding: 20px;\n  width: calc(100% - 40px);\n  border-bottom: 1px solid #38464e;\n  font-size: 12px;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.message__left {\n  -ms-flex: 1;\n      flex: 1;\n  word-break: break-all; }\n\n.message__username {\n  font-weight: 600;\n  margin-right: 10px; }\n\n.message__text {\n  font-weight: 400;\n  max-width: 95%; }\n\n.message__date {\n  font-weight: 300;\n  color: #989898;\n  text-align: right; }\n\n.user-label__container {\n  width: calc(100% - 10px); }\n\n.user-label {\n  padding: 5px;\n  font-weight: 600;\n  transition: all .2s ease-in-out; }\n\n.user-label:hover {\n  background-color: #677c86; }\n\n.user-blob {\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n  background-color: #fff;\n  display: inline-block;\n  margin-right: 5px; }\n\n.notification {\n  width: 100%;\n  padding: 10px 0;\n  font-weight: 700;\n  text-align: center;\n  background-color: #35434a; }\n\n.popup-container {\n  background-color: rgba(0, 0, 0, 0.7);\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center; }\n\n.popup {\n  width: 300px;\n  height: 200px;\n  background-color: white;\n  position: relative;\n  color: #273238;\n  padding: 20px;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center; }\n\n.popup__close {\n  position: absolute;\n  cursor: pointer;\n  right: 20px;\n  top: 20px; }\n", "", {"version":3,"sources":["C:/Users/Vinícius Giles/Desktop/Projetos/react-chat/public/css/index.sass"],"names":[],"mappings":"AACA;;;;EAIE,UAAU;EACV,WAAW,EAAE;;AAEf;EACE,oCAAoC;EACpC,iBAAiB,EAAE;;AAErB;;EAEE,aAAa,EAAE;;AAEjB;EACE,0BAA0B;EAC1B,qBAAqB;EACrB,cAAc;EACd,sBAAsB;MAClB,wBAAwB;EAC5B,uBAAuB;MACnB,oBAAoB;EACxB,2BAA2B;MACvB,sBAAsB;EAC1B,eAAe,EAAE;;AAEnB;EACE,YAAY;EACZ,aAAa,EAAE;;AAEjB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,gBAAgB;EAChB,iBAAiB,EAAE;;AAErB;EACE,0BAA0B;EAC1B,YAAY;EACZ,aAAa;EACb,gBAAgB;EAChB,eAAe;EACf,qBAAqB;EACrB,cAAc;EACd,0BAA0B;MACtB,sBAAsB;EAC1B,uBAAuB;MACnB,+BAA+B,EAAE;;AAEvC;EACE,YAAY;MACR,QAAQ;EACZ,aAAa,EAAE;;AAEjB;EACE,oBAAoB,EAAE;;AAExB;EACE,kBAAkB;MACd,cAAc;EAClB,0BAA0B;EAC1B,aAAa;EACb,qBAAqB;EACrB,cAAc;EACd,6BAA6B;MACzB,yBAAyB,EAAE;;AAEjC;EACE,YAAY;MACR,QAAQ;EACZ,0BAA0B;EAC1B,aAAa;EACb,iBAAiB,EAAE;;AAErB;EACE,mBAAmB,EAAE;;AAEvB;EACE,aAAa;EACb,yBAAyB;EACzB,aAAa;EACb,cAAc;EACd,UAAU;EACV,8BAA8B;EAC9B,cAAc;EACd,0BAA0B,EAAE;;AAE9B;EACE,cAAc;EACd,yBAAyB;EACzB,iCAAiC;EACjC,gBAAgB;EAChB,qBAAqB;EACrB,cAAc;EACd,uBAAuB;MACnB,oBAAoB;EACxB,uBAAuB;MACnB,+BAA+B,EAAE;;AAEvC;EACE,YAAY;MACR,QAAQ;EACZ,sBAAsB,EAAE;;AAE1B;EACE,iBAAiB;EACjB,mBAAmB,EAAE;;AAEvB;EACE,iBAAiB;EACjB,eAAe,EAAE;;AAEnB;EACE,iBAAiB;EACjB,eAAe;EACf,kBAAkB,EAAE;;AAEtB;EACE,yBAAyB,EAAE;;AAE7B;EACE,aAAa;EACb,iBAAiB;EACjB,gCAAgC,EAAE;;AAEpC;EACE,0BAA0B,EAAE;;AAE9B;EACE,YAAY;EACZ,aAAa;EACb,mBAAmB;EACnB,uBAAuB;EACvB,sBAAsB;EACtB,kBAAkB,EAAE;;AAEtB;EACE,YAAY;EACZ,gBAAgB;EAChB,iBAAiB;EACjB,mBAAmB;EACnB,0BAA0B,EAAE;;AAE9B;EACE,qCAAqC;EACrC,YAAY;EACZ,aAAa;EACb,mBAAmB;EACnB,qBAAqB;EACrB,cAAc;EACd,sBAAsB;MAClB,wBAAwB;EAC5B,uBAAuB;MACnB,oBAAoB,EAAE;;AAE5B;EACE,aAAa;EACb,cAAc;EACd,wBAAwB;EACxB,mBAAmB;EACnB,eAAe;EACf,cAAc;EACd,qBAAqB;EACrB,cAAc;EACd,sBAAsB;MAClB,wBAAwB;EAC5B,uBAAuB;MACnB,oBAAoB,EAAE;;AAE5B;EACE,mBAAmB;EACnB,gBAAgB;EAChB,YAAY;EACZ,UAAU,EAAE","file":"index.sass","sourcesContent":["@import url(\"https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700\");\nhtml,\nbody,\nul,\nol {\n  margin: 0;\n  padding: 0; }\n\n* {\n  font-family: Montserrat, sans-serif;\n  font-weight: 400; }\n\nhtml,\nbody {\n  height: 100%; }\n\nbody {\n  background-color: #273238;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-line-pack: center;\n      align-content: center;\n  color: #f2f2f2; }\n\ndiv#root {\n  width: 100%;\n  height: 100%; }\n\n.font10 {\n  font-size: 10px;\n  font-weight: 300; }\n\n.font12 {\n  font-size: 12px;\n  font-weight: 300; }\n\n.font14 {\n  font-size: 14px;\n  font-weight: 600; }\n\n.font16 {\n  font-size: 16px;\n  font-weight: 600; }\n\n.font18 {\n  font-size: 18px;\n  font-weight: 700; }\n\n.chat-container {\n  background-color: #7b94a0;\n  width: 100%;\n  height: 100%;\n  font-size: 13px;\n  color: #f2f2f2;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: row nowrap;\n      flex-flow: row nowrap;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.chat__users {\n  -ms-flex: 1;\n      flex: 1;\n  margin: 20px; }\n\n.chat__users__title {\n  margin-bottom: 15px; }\n\n.chat__main {\n  -ms-flex: 0 0 75%;\n      flex: 0 0 75%;\n  background-color: #273238;\n  height: 100%;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: column nowrap;\n      flex-flow: column nowrap; }\n\n.chat__messages {\n  -ms-flex: 1;\n      flex: 1;\n  background-color: #273238;\n  height: 100%;\n  overflow-y: auto; }\n\n.chat__textarea {\n  text-align: center; }\n\n.chat__textarea textarea {\n  resize: none;\n  width: calc(100% - 26px);\n  height: 40px;\n  padding: 10px;\n  border: 0;\n  border-top: 1px solid #38464e;\n  outline: none;\n  background-color: #d1d1d1; }\n\n.message {\n  padding: 20px;\n  width: calc(100% - 40px);\n  border-bottom: 1px solid #38464e;\n  font-size: 12px;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-align: center;\n      align-items: center;\n  -ms-flex-pack: justify;\n      justify-content: space-between; }\n\n.message__left {\n  -ms-flex: 1;\n      flex: 1;\n  word-break: break-all; }\n\n.message__username {\n  font-weight: 600;\n  margin-right: 10px; }\n\n.message__text {\n  font-weight: 400;\n  max-width: 95%; }\n\n.message__date {\n  font-weight: 300;\n  color: #989898;\n  text-align: right; }\n\n.user-label__container {\n  width: calc(100% - 10px); }\n\n.user-label {\n  padding: 5px;\n  font-weight: 600;\n  transition: all .2s ease-in-out; }\n\n.user-label:hover {\n  background-color: #677c86; }\n\n.user-blob {\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n  background-color: #fff;\n  display: inline-block;\n  margin-right: 5px; }\n\n.notification {\n  width: 100%;\n  padding: 10px 0;\n  font-weight: 700;\n  text-align: center;\n  background-color: #35434a; }\n\n.popup-container {\n  background-color: rgba(0, 0, 0, 0.7);\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center; }\n\n.popup {\n  width: 300px;\n  height: 200px;\n  background-color: white;\n  position: relative;\n  color: #273238;\n  padding: 20px;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: center;\n      justify-content: center;\n  -ms-flex-align: center;\n      align-items: center; }\n\n.popup__close {\n  position: absolute;\n  cursor: pointer;\n  right: 20px;\n  top: 20px; }\n"],"sourceRoot":""}]);
 
 // exports
 exports.locals = {
+	"root": "root",
 	"font10": "font10",
 	"font12": "font12",
 	"font14": "font14",
@@ -18451,7 +18508,11 @@ exports.locals = {
 	"message__date": "message__date",
 	"user-label__container": "user-label__container",
 	"user-label": "user-label",
-	"user-blob": "user-blob"
+	"user-blob": "user-blob",
+	"notification": "notification",
+	"popup-container": "popup-container",
+	"popup": "popup",
+	"popup__close": "popup__close"
 };
 
 /***/ }),
@@ -19023,11 +19084,13 @@ module.exports = function (css) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Message_js__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Notification_js__ = __webpack_require__(35);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 
 
 
@@ -19059,7 +19122,12 @@ var MessageArea = function (_React$Component) {
                     return _this2.messageList = el;
                 } },
             this.props.messages.map(function (m, i) {
-                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__Message_js__["a" /* default */], { user: m.user, date: m.date, message: m.message, key: m.user + "_" + i });
+                var message = null;
+                if (m.type === 'message') {
+                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__Message_js__["a" /* default */], { user: m.user, date: m.date, message: m.message, key: m.user + "_" + i });
+                } else {
+                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__Notification_js__["a" /* default */], { message: m.message, key: i });
+                }
             })
         );
     };
@@ -19145,7 +19213,47 @@ var Message = function (_React$Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserLabel_js__ = __webpack_require__(36);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var Notification = function (_React$Component) {
+    _inherits(Notification, _React$Component);
+
+    function Notification() {
+        _classCallCheck(this, Notification);
+
+        return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
+    }
+
+    Notification.prototype.render = function render() {
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a.notification },
+            this.props.message
+        );
+    };
+
+    return Notification;
+}(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["a"] = (Notification);
+
+/***/ }),
+/* 36 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserLabel_js__ = __webpack_require__(37);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -19190,7 +19298,7 @@ var UserList = function (_React$Component) {
 /* harmony default export */ __webpack_exports__["a"] = (UserList);
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19249,7 +19357,7 @@ var UserBlob = function (_React$Component2) {
 }(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19313,6 +19421,79 @@ var TypeArea = function (_React$Component) {
 }(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
 
 /* harmony default export */ __webpack_exports__["a"] = (TypeArea);
+
+/***/ }),
+/* 39 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__public_css_index_sass__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var RegisterPopup = function (_React$Component) {
+    _inherits(RegisterPopup, _React$Component);
+
+    function RegisterPopup(props) {
+        _classCallCheck(this, RegisterPopup);
+
+        var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
+
+        _this.state = {
+            visible: true,
+            name: ""
+        };
+
+        _this.closePopup = _this.closePopup.bind(_this);
+        _this.handleInput = _this.handleInput.bind(_this);
+        return _this;
+    }
+
+    RegisterPopup.prototype.handleInput = function handleInput(e) {
+        var event = e.nativeEvent;
+        this.setState({
+            name: event.target.value
+        });
+    };
+
+    RegisterPopup.prototype.closePopup = function closePopup() {
+        this.setState({
+            visible: false
+        });
+        this.props.register(this.state.name);
+    };
+
+    RegisterPopup.prototype.render = function render() {
+        return this.state.visible ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a["popup-container"] },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: __WEBPACK_IMPORTED_MODULE_1__public_css_index_sass___default.a.popup },
+                'Your name:',
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', value: this.state.name, onInput: this.handleInput }),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'button',
+                    { onClick: this.closePopup },
+                    'Entrar'
+                )
+            )
+        ) : __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('div', null);
+    };
+
+    return RegisterPopup;
+}(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["a"] = (RegisterPopup);
 
 /***/ })
 /******/ ]);
