@@ -18346,8 +18346,11 @@ var Chat = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
 
         _this.state = {
-            currentUser: "",
-            messages: [],
+            currentUser: "You",
+            messages: [{
+                type: 'notification',
+                message: '~ Welcome! ~'
+            }],
             users: []
 
             /* Methods */
@@ -18355,12 +18358,13 @@ var Chat = function (_React$Component) {
         _this.sendMessage = _this.sendMessage.bind(_this);
         _this.receiveMessage = _this.receiveMessage.bind(_this);
         _this.notify = _this.notify.bind(_this);
-        _this.userRegistered = _this.userRegistered.bind(_this);
-        _this.userDisconnected = _this.userDisconnected.bind(_this);
+        _this.addUserToList = _this.addUserToList.bind(_this);
+        _this.removeUserFromList = _this.removeUserFromList.bind(_this);
         _this.registerUser = _this.registerUser.bind(_this);
+        _this.getOnlineUsers = _this.getOnlineUsers.bind(_this);
 
         /* Socket listeners */
-        _this.socket = _this.configSocket();
+        _this.client = _this.configSocket();
 
         return _this;
     }
@@ -18368,27 +18372,31 @@ var Chat = function (_React$Component) {
     Chat.prototype.configSocket = function configSocket() {
         var _this2 = this;
 
-        var socket = io();
+        var client = io();
 
-        socket.on('userConnected', function (id) {
-            console.log('User #' + id + ' is online');
+        client.on('getOnlineUsers', function (users) {
+            _this2.getOnlineUsers(users);
         });
-
-        socket.on('userRegistered', function (username) {
-            _this2.userRegistered(username);
+        client.on('receiveMessage', function (msg) {
+            _this2.receiveMessage(msg);
+        });
+        client.on('receiveUser', function (username) {
+            _this2.addUserToList(username);
             _this2.notify('~ ' + username + ' is online. ~');
         });
-
-        socket.on('userDisconnected', function (username) {
-            _this2.userDisconnected(username);
+        client.on('sayGoodbye', function (username) {
+            _this2.removeUserFromList(username);
             _this2.notify('~ ' + username + ' went offline. ~');
         });
 
-        socket.on('newMessage', function (message) {
-            _this2.receiveMessage(message);
-        });
+        return client;
+    };
 
-        return socket;
+    Chat.prototype.registerUser = function registerUser(username) {
+        this.client.emit('userHasRegistered', username);
+        this.setState({
+            currentUser: username
+        });
     };
 
     Chat.prototype.sendMessage = function sendMessage(newMessage) {
@@ -18401,16 +18409,45 @@ var Chat = function (_React$Component) {
             type: 'message'
         };
 
-        this.socket.emit('newMessage', newMsg);
+        this.client.emit('userSentMessage', newMsg);
 
-        this.setState({
-            messages: this.state.messages.concat([newMsg])
+        this.setState(function (prevState) {
+            return {
+                messages: prevState.messages.concat(newMsg)
+            };
         });
     };
 
     Chat.prototype.receiveMessage = function receiveMessage(msg) {
+        this.setState(function (prevState) {
+            return {
+                messages: prevState.messages.concat(msg)
+            };
+        });
+    };
+
+    Chat.prototype.addUserToList = function addUserToList(username) {
+        this.setState(function (prevState) {
+            return {
+                users: prevState.users.concat(username)
+            };
+        });
+    };
+
+    Chat.prototype.removeUserFromList = function removeUserFromList(username) {
+        var _users = this.state.users;
+        if (_users.indexOf(username) >= 0) {
+            _users.splice(_users.indexOf(username), 1);
+
+            this.setState({
+                users: _users
+            });
+        }
+    };
+
+    Chat.prototype.getOnlineUsers = function getOnlineUsers(userList) {
         this.setState({
-            messages: this.state.messages.concat([msg])
+            users: userList
         });
     };
 
@@ -18422,34 +18459,6 @@ var Chat = function (_React$Component) {
         this.setState({
             messages: this.state.messages.concat([notif])
         });
-    };
-
-    Chat.prototype.userRegistered = function userRegistered(username) {
-        var _users = this.state.users;
-        _users.push(username);
-        this.setState({
-            users: _users
-        });
-    };
-
-    Chat.prototype.userDisconnected = function userDisconnected(username) {
-        var _users = this.state.users;
-        if (_users.indexOf(username) >= 0) {
-            _users.splice(_users.indexOf(username), 1);
-            console.log(_users);
-            this.setState({
-                users: _users
-            });
-        } else {
-            console.log('nope');
-        }
-    };
-
-    Chat.prototype.registerUser = function registerUser(username) {
-        this.setState({
-            currentUser: username
-        });
-        this.socket.emit('userRegistered', username);
     };
 
     Chat.prototype.render = function render() {
@@ -19391,6 +19400,7 @@ var TypeArea = function (_React$Component) {
 
     TypeArea.prototype.handleInput = function handleInput(e) {
         var event = e.nativeEvent;
+
         if (event.inputType !== undefined) {
             if (event.inputType == "insertLineBreak") {
                 this.sendMessage();

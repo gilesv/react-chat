@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
-const socket = require('./config/socket.js')(http);
+const Users = require('./users.js')();
+const socket = require('./config/socket.js')(http, Users);
 
 app.use('/public', express.static(__dirname + '/public'));
 

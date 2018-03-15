@@ -1,29 +1,25 @@
-var messages = {};
-var users = {};
 
-module.exports = function(http) {
+module.exports = function(http, Users) {
     const io = require('socket.io')(http, { wsEngine: 'ws' });
 
-    io.on('connection', function(client) {
+    io.on('connection', function(server) {
+        var userId = server.id;
 
-        client.broadcast.emit('userConnected', client.id);
-
-        client.on('userConnected', function(id) {
-            client.broadcast.emit('userConnected', id);
+        server.on('disconnect', function() {
+            server.broadcast.emit('sayGoodbye', Users.users[userId]);
+            Users.delete(userId);
+        });
+        
+        server.on('userHasRegistered', function(username) {
+            Users.add(userId, username);
+            server.broadcast.emit('receiveUser', username); // tells everyone to receive new user
+            server.emit('getOnlineUsers', Object.values(Users.users));
         });
 
-        client.on('userRegistered', function(username) {
-            users[client.id] = username;
-            client.broadcast.emit('userRegistered', username);
-        })
-
-        client.on('newMessage', function(msg) {
-            client.broadcast.emit('newMessage', msg);
+        server.on('userSentMessage', function(msg) {
+            server.broadcast.emit('receiveMessage', msg); // tells everyone to receive new message
         });
 
-        client.on('disconnect', function() {
-            client.broadcast.emit('userDisconnected', users[client.id]);
-        });
     });
 
     return io;

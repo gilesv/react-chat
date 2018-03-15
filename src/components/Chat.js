@@ -10,8 +10,11 @@ export default class Chat extends React.Component {
         super(props);
 
         this.state = {
-            currentUser: "",
-            messages: [],
+            currentUser: "You",
+            messages: [{
+                type: 'notification',
+                message: '~ Welcome! ~'
+            }],
             users: []
         }
 
@@ -20,44 +23,43 @@ export default class Chat extends React.Component {
         this.sendMessage = this.sendMessage.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
         this.notify = this.notify.bind(this);
-        this.userRegistered = this.userRegistered.bind(this);
-        this.userDisconnected = this.userDisconnected.bind(this);
+        this.addUserToList = this.addUserToList.bind(this);
+        this.removeUserFromList = this.removeUserFromList.bind(this);
         this.registerUser = this.registerUser.bind(this);
+        this.getOnlineUsers = this.getOnlineUsers.bind(this);
 
         /* Socket listeners */
-        this.socket = this.configSocket();
+        this.client = this.configSocket();
 
     }
 
     configSocket() {
-        let socket = io();
-    
-        socket.on('userConnected', (id) => {
-            console.log('User #' + id + ' is online');
-        });
+        let client = io();
 
-        socket.on('userRegistered', (username) => {
-            this.userRegistered(username);
+        client.on('getOnlineUsers', (users) => {
+            this.getOnlineUsers(users);
+        });
+        client.on('receiveMessage', (msg) => {
+            this.receiveMessage(msg);
+        });
+        client.on('receiveUser', (username) => {
+            this.addUserToList(username);
             this.notify('~ '+ username + ' is online. ~');
         });
-
-        socket.on('userDisconnected', (username) => {
-            this.userDisconnected(username);
+        client.on('sayGoodbye', (username) => {
+            this.removeUserFromList(username);
             this.notify('~ '+ username + ' went offline. ~');
         });
 
-        socket.on('newMessage', (message) => {
-            this.receiveMessage(message);
-        })
-
-        return socket;
+        return client;
     }
 
     registerUser(username) {
+        this.client.emit('userHasRegistered', username);
         this.setState({
             currentUser: username
         });
-        this.socket.emit('userRegistered', username);
+        
     }
 
     sendMessage(newMessage) {
@@ -70,40 +72,40 @@ export default class Chat extends React.Component {
             type: 'message'
         };
 
-        this.socket.emit('newMessage', newMsg);
+        this.client.emit('userSentMessage', newMsg);
 
-        this.setState({
-            messages: this.state.messages.concat([newMsg])
-        });
-        
+        this.setState((prevState) => ({
+            messages: prevState.messages.concat(newMsg)
+        }));   
     }
 
     receiveMessage(msg) {
-        this.setState({
-            messages: this.state.messages.concat([msg])
-        });
+        this.setState((prevState) => ({
+            messages: prevState.messages.concat(msg)
+        }));
     }
 
-    userRegistered(username) {
-        let _users = this.state.users;
-        _users.push(username);
-        this.setState({
-            users: _users
-        });
+    addUserToList(username) {
+        this.setState((prevState) => ({
+            users: prevState.users.concat(username)
+        }));
     }
 
-    userDisconnected(username) {
+    removeUserFromList(username) {
         let _users = this.state.users;
         if(_users.indexOf(username) >= 0) {
             _users.splice(_users.indexOf(username),1);
-            console.log(_users);
+
             this.setState({
                 users: _users
             });
-        } else {
-            console.log('nope');
-        }
-        
+        }        
+    }
+
+    getOnlineUsers(userList) {
+        this.setState({
+            users: userList
+        });
     }
 
     notify(message) {

@@ -12,6 +12,7 @@ export default class TypeArea extends React.Component {
 
     handleInput(e) { 
         let event = e.nativeEvent;
+
         if(event.inputType !== undefined) {
             if(event.inputType == "insertLineBreak") {
                 this.sendMessage();
