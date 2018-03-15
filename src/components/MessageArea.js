@@ -1,7 +1,5 @@
 import React from "react";
 import styles from '../../public/css/index.sass';
-import Message from './Message.js';
-import Notification from './Notification.js';
 
 export default class MessageArea extends React.Component {
     componentDidUpdate() {
@@ -30,4 +28,31 @@ export default class MessageArea extends React.Component {
             </div>
         );
     }
+}
+
+function Message(props) {
+    return (
+        <div className={styles.message}>
+            <div className={styles.message__left}>
+                <div className={styles.message__username}>{props.user}</div>
+                <div className={styles.message__text}>
+                    {
+                        props.message.split('<br>').map((s, i) =>  <div key={i}>{s}</div>)
+                    }
+                </div>
+            </div>
+            <div className={styles.message__date}>
+                <div>{props.date[0]}</div>
+                <div>{props.date[1]}</div>
+            </div>
+        </div>
+    );
+}
+
+function Notification(props) {
+    return (
+        <div className={styles.notification}>
+            {props.message}
+        </div>
+    );
 }

@@ -47,8 +47,10 @@ export default class Chat extends React.Component {
             this.notify('~ '+ username + ' is online. ~');
         });
         client.on('sayGoodbye', (username) => {
-            this.removeUserFromList(username);
-            this.notify('~ '+ username + ' went offline. ~');
+            if(username !== null) {
+                this.removeUserFromList(username);
+                this.notify('~ '+ username + ' went offline. ~');
+            }
         });
 
         return client;
@@ -74,15 +76,30 @@ export default class Chat extends React.Component {
 
         this.client.emit('userSentMessage', newMsg);
 
-        this.setState((prevState) => ({
-            messages: prevState.messages.concat(newMsg)
-        }));   
+        this.receiveMessage(newMsg);
     }
 
     receiveMessage(msg) {
-        this.setState((prevState) => ({
-            messages: prevState.messages.concat(msg)
-        }));
+        let lastIndex = this.state.messages.length - 1;
+        let lastMessage = this.state.messages[lastIndex];
+
+        if(msg.type === 'message' && msg.user === lastMessage.user) {
+            lastMessage.message += '<br>' + msg.message;
+            lastMessage.date = msg.date;
+
+            this.setState(prevState => {
+                /* appends new message to previous message */
+                prevState.messages[lastIndex] = lastMessage;
+                return ({
+                    messages: prevState.messages
+                });
+            });
+
+        } else {
+            this.setState((prevState) => ({
+                messages: prevState.messages.concat(msg)
+            }));
+        }
     }
 
     addUserToList(username) {
