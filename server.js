@@ -10,6 +10,6 @@ app.get('/', function(req, res){
     res.sendFile('index.html', { root: 'public' });
 });
 
-http.listen(3000, function() {
+http.listen(process.env.PORT || 3000, function() {
     console.log('Listening at http://localhost:3000...');
 });
